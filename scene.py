@@ -60,15 +60,22 @@ class Trapezoid(Polygon):
             **kwargs
         ).move_to(self)
 
+def tex_at(
+    text: str,
+    point: list | ndarray,
+    direction=RIGHT,
+    color=BLACK
+):
+    return Tex(text).next_to(point, direction).set_color(color)
 
 def point_and_tex(
     text: str,
     point: list | ndarray,
-    direction = RIGHT,
+    direction=RIGHT,
     color=BLACK
 ):
     dot = Dot(point, color=color)
-    dot_text = Tex(text).next_to(dot, direction).set_color(color)
+    dot_text = tex_at(text, point, direction, color)
 
     return VGroup(dot, dot_text)
 
@@ -83,20 +90,39 @@ class Test(Scene):
         trpzd = Trapezoid(3.3, 6, center=True, color=BLACK)
         triangle = trpzd.fitting_triangle(color=BLACK)
 
-        # Point text
-        p_point = point_and_tex('P', trpzd.top_left, LEFT + UP)
-        q_point = point_and_tex('Q', trpzd.top_right, RIGHT)
-        m_point = point_and_tex('M', trpzd.bottom_left, DOWN)
-        n_point = point_and_tex('N', trpzd.bottom_right, DOWN)
+        # Vertex
+        p_vertex = trpzd.top_left
+        q_vertex = trpzd.top_right
+        m_vertex = trpzd.bottom_left
+        n_vertex = trpzd.bottom_right
 
-        r_point = point_and_tex('R', triangle.get_vertices()[2], DOWN)
+        # Vertex text for trapezoid
+        p_point = point_and_tex('P', p_vertex, LEFT + UP)
+        q_point = point_and_tex('Q', q_vertex, RIGHT)
+        m_point = point_and_tex('M', m_vertex, DOWN)
+        n_point = point_and_tex('N', n_vertex, DOWN)
 
-        juan = point_and_tex('Z', middle_point(trpzd.top_right, trpzd.top_left), UP)
+        trapezoid_tex = VGroup(p_point, q_point, m_point, n_point)
+
+        # Vertex for center triangle
+        r_vertex = triangle.get_vertices()[2]
+        r_point = point_and_tex('R', r_vertex, DOWN)
+
+        # Right triangle text
+        a1_tex = tex_at('a', middle_point(q_vertex, n_vertex))
+        b1_tex = tex_at('b', middle_point(r_vertex, n_vertex), DOWN * 0.35)
+        c1_tex = tex_at('c', middle_point(r_vertex, q_vertex), LEFT)
+        right_triangle_tex = VGroup(a1_tex, b1_tex, c1_tex)
+
+        # Left triangle text
+        a2_tex = tex_at('a', middle_point(m_vertex, r_vertex), DOWN * 0.65)
+        b2_tex = tex_at('b', middle_point(m_vertex, p_vertex), LEFT)
+        c2_tex = tex_at('c', middle_point(p_vertex, r_vertex), UP * 0.3 + RIGHT)
+        left_triangle_tex = VGroup(a2_tex, b2_tex, c2_tex)
+
 
         # Animations
-        self.play(Write(VGroup(trpzd, p_point, q_point, m_point, n_point)))
+        self.play(Write(VGroup(trpzd, trapezoid_tex)))
+        self.play(Write(VGroup(triangle, r_point, right_triangle_tex, left_triangle_tex)))
 
-        self.wait(1)
-        self.play(Write(VGroup(triangle, r_point, juan)))
-
-        self.wait(1)
+        self.wait(2)
