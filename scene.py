@@ -26,19 +26,19 @@ class Trapezoid(Polygon):
             self.shift(DOWN * b / 2 + LEFT * (a + b) / 2)
 
     @property
-    def top_right(self):
+    def top_right(self) -> list:
         return self.get_vertices()[0]
 
     @property
-    def top_left(self):
+    def top_left(self) -> list:
         return self.get_vertices()[1]
 
     @property
-    def bottom_left(self):
+    def bottom_left(self) -> list:
         return self.get_vertices()[2]
 
     @property
-    def bottom_right(self):
+    def bottom_right(self) -> list:
         return self.get_vertices()[3]
 
 
@@ -59,15 +59,33 @@ class Trapezoid(Polygon):
             **kwargs
         ).move_to(self)
 
+# Yes, this does not scale pretty well
+def point_and_text(text: str, point, direction, color=BLACK):
+    dot = Dot(point, color=color)
+    dot_text = Tex(text).next_to(dot, direction).set_color(color)
+
+    return VGroup(dot, dot_text)
+
 
 class Test(Scene):
     def construct(self):
+        # Shapes
         trapezoid = Trapezoid(3.3, 6, center=True, color=BLACK)
         triangle = trapezoid.fitting_triangle(color=BLACK)
-        rectangle = trapezoid.enclosing_rectangle(color=BLACK)
 
-        figure = VGroup(trapezoid, triangle, rectangle)
+        # Point text
+        p_point = point_and_text('P', trapezoid.top_left, LEFT + UP)
+        q_point = point_and_text('Q', trapezoid.top_right, RIGHT)
+        m_point = point_and_text('M', trapezoid.bottom_left, DOWN)
+        n_point = point_and_text('N', trapezoid.bottom_right, DOWN)
 
-        self.play(Write(figure))
+        r_point = point_and_text('R', triangle.get_vertices()[2], DOWN)
+
+
+        # Animations
+        self.play(Write(VGroup(trapezoid, p_point, q_point, m_point, n_point)))
+
+        self.wait(1)
+        self.play(Write(VGroup(triangle, r_point)))
 
         self.wait(1)
