@@ -64,7 +64,7 @@ class Trapezoid(Polygon):
 def point_and_tex(
     text: str,
     point: list | ndarray,
-    direction: ndarray,
+    direction = RIGHT,
     color=BLACK
 ):
     dot = Dot(point, color=color)
@@ -73,25 +73,30 @@ def point_and_tex(
     return VGroup(dot, dot_text)
 
 
+def middle_point(p1: ndarray, p2: ndarray) -> ndarray:
+    return Line(p1, p2).get_midpoint()
+
+
 class Test(Scene):
     def construct(self):
         # Shapes
-        trapezoid = Trapezoid(3.3, 6, center=True, color=BLACK)
-        triangle = trapezoid.fitting_triangle(color=BLACK)
+        trpzd = Trapezoid(3.3, 6, center=True, color=BLACK)
+        triangle = trpzd.fitting_triangle(color=BLACK)
 
         # Point text
-        p_point = point_and_tex('P', trapezoid.top_left, LEFT + UP)
-        q_point = point_and_tex('Q', trapezoid.top_right, RIGHT)
-        m_point = point_and_tex('M', trapezoid.bottom_left, DOWN)
-        n_point = point_and_tex('N', trapezoid.bottom_right, DOWN)
+        p_point = point_and_tex('P', trpzd.top_left, LEFT + UP)
+        q_point = point_and_tex('Q', trpzd.top_right, RIGHT)
+        m_point = point_and_tex('M', trpzd.bottom_left, DOWN)
+        n_point = point_and_tex('N', trpzd.bottom_right, DOWN)
 
         r_point = point_and_tex('R', triangle.get_vertices()[2], DOWN)
 
+        juan = point_and_tex('Z', middle_point(trpzd.top_right, trpzd.top_left), UP)
 
         # Animations
-        self.play(Write(VGroup(trapezoid, p_point, q_point, m_point, n_point)))
+        self.play(Write(VGroup(trpzd, p_point, q_point, m_point, n_point)))
 
         self.wait(1)
-        self.play(Write(VGroup(triangle, r_point)))
+        self.play(Write(VGroup(triangle, r_point, juan)))
 
         self.wait(1)
