@@ -1,4 +1,5 @@
 from manim import *
+from numpy import ndarray
 
 config.background_color = "#ece6e2"
 
@@ -26,19 +27,19 @@ class Trapezoid(Polygon):
             self.shift(DOWN * b / 2 + LEFT * (a + b) / 2)
 
     @property
-    def top_right(self) -> list:
+    def top_right(self) -> ndarray:
         return self.get_vertices()[0]
 
     @property
-    def top_left(self) -> list:
+    def top_left(self) -> ndarray:
         return self.get_vertices()[1]
 
     @property
-    def bottom_left(self) -> list:
+    def bottom_left(self) -> ndarray:
         return self.get_vertices()[2]
 
     @property
-    def bottom_right(self) -> list:
+    def bottom_right(self) -> ndarray:
         return self.get_vertices()[3]
 
 
@@ -59,8 +60,13 @@ class Trapezoid(Polygon):
             **kwargs
         ).move_to(self)
 
-# Yes, this does not scale pretty well
-def point_and_text(text: str, point, direction, color=BLACK):
+
+def point_and_tex(
+    text: str,
+    point: list | ndarray,
+    direction: ndarray,
+    color=BLACK
+):
     dot = Dot(point, color=color)
     dot_text = Tex(text).next_to(dot, direction).set_color(color)
 
@@ -74,12 +80,12 @@ class Test(Scene):
         triangle = trapezoid.fitting_triangle(color=BLACK)
 
         # Point text
-        p_point = point_and_text('P', trapezoid.top_left, LEFT + UP)
-        q_point = point_and_text('Q', trapezoid.top_right, RIGHT)
-        m_point = point_and_text('M', trapezoid.bottom_left, DOWN)
-        n_point = point_and_text('N', trapezoid.bottom_right, DOWN)
+        p_point = point_and_tex('P', trapezoid.top_left, LEFT + UP)
+        q_point = point_and_tex('Q', trapezoid.top_right, RIGHT)
+        m_point = point_and_tex('M', trapezoid.bottom_left, DOWN)
+        n_point = point_and_tex('N', trapezoid.bottom_right, DOWN)
 
-        r_point = point_and_text('R', triangle.get_vertices()[2], DOWN)
+        r_point = point_and_tex('R', triangle.get_vertices()[2], DOWN)
 
 
         # Animations
