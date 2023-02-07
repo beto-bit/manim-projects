@@ -21,13 +21,40 @@ class Trapezoid(Polygon):
         if center:
             self.shift(DOWN * b / 2 + LEFT * (a + b) / 2)
 
+    @property
+    def top_right(self):
+        return self.get_vertices()[0]
+
+    @property
+    def top_left(self):
+        return self.get_vertices()[1]
+
+    @property
+    def bottom_left(self):
+        return self.get_vertices()[2]
+
+    @property
+    def bottom_right(self):
+        return self.get_vertices()[3]
+
+
+    def fitting_triangle(self) -> Polygon:
+        middle = self.bottom_left + [self.b_length, 0, 0]
+
+        return Polygon(
+            self.top_right,
+            self.top_left,
+            middle
+        )
+
 
 class Test(Scene):
     def construct(self):
         trapezoid = Trapezoid(2, 6, center=True)
-
+        triangle = trapezoid.fitting_triangle()
 
         self.play(Write(trapezoid))
+        self.play(Write(triangle))
         self.wait(1)
 
         pass
