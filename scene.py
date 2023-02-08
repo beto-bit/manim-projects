@@ -262,5 +262,15 @@ class Test(Scene):
         self.play(TransformMatchingTex(total_area1, total_area2))
         self.play(TransformMatchingTex(total_area2, total_area3))
 
+        # Fading and moving
+        self.play(
+            Unwrite(VGroup(triangle_areas, center_triangle_area1)),
+            total_area3.animate.shift(LEFT * 5.6)
+        )
+
+        # Highlight
+        framebox1 = SurroundingRectangle(total_area3).set_color(BLUE)
+        self.play(Create(framebox1))
+
 
         self.wait(2)
