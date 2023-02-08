@@ -139,7 +139,8 @@ class Test(Scene):
         m_point = point_and_MathTex('M', m_vertex, DOWN + LEFT)
         n_point = point_and_MathTex('N', n_vertex, DOWN + RIGHT)
 
-        trapezoid_tex = VGroup(p_point, q_point, m_point, n_point, square1, square2)
+        corner_angles = VGroup(square1, square2)
+        trapezoid_tex = VGroup(p_point, q_point, m_point, n_point)
 
 
         # Vertex for center triangle
@@ -168,13 +169,21 @@ class Test(Scene):
             angle_with_tex(beta_tex, r_vertex, n_vertex, q_vertex),                       # Beta right
 
             angle_with_tex(alpha_tex.copy(), m_vertex, r_vertex, p_vertex),   # Alpha left
-            angle_with_tex(beta_tex.copy(), p_vertex, m_vertex, r_vertex),    # Beta left
+            angle_with_tex(beta_tex.copy(), p_vertex, m_vertex, r_vertex, label_multiplier=1.75),    # Beta left
         )
 
+        all_figures = VGroup(
+            trpzd,
+            triangle,
+            corner_angles,
+            triangles_angles,
+            right_triangle_tex,
+            left_triangle_tex
+        )
 
         # Animations
         # Initial things
-        self.play(Write(VGroup(trpzd, trapezoid_tex)))
+        self.play(Write(VGroup(trpzd, trapezoid_tex, corner_angles)))
         self.wait(1)
 
         self.play(
@@ -187,6 +196,11 @@ class Test(Scene):
         self.play(
             FadeOut(r_point),
             Write(triangles_angles),
+        )
+
+        # Shrink and move
+        self.play(
+            all_figures.animate.scale(0.5).move_to(LEFT * 4 + UP * 2)
         )
 
         self.wait(2)
