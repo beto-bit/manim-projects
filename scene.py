@@ -203,4 +203,64 @@ class Test(Scene):
             all_figures.animate.scale(0.5).move_to(LEFT * 4 + UP * 2)
         )
 
+
+        # Formulas
+        triangle_areas = MathTex(
+            "A_1",
+            "=",
+            "A_2",
+            "=",
+            "\\frac{ab}{2}",
+        ).move_to(RIGHT * 0.75 + UP * 2).set_color(BLACK)
+
+        center_triangle_area1 = MathTex(
+            "A_3",
+            "=",
+            "\\frac{c * c}{2}"
+        ).move_to(RIGHT * 5 + UP * 2).set_color(BLACK)
+
+        center_triangle_area2 = MathTex(
+            "A_3",
+            "=",
+            "\\frac{c ^ {2}}{2}"
+        ).move_to(RIGHT * 5 + UP * 2).set_color(BLACK)
+
+        self.play(Write(VGroup(triangle_areas, center_triangle_area1)))
+        self.play(Transform(center_triangle_area1, center_triangle_area2))
+
+
+        # Sum of formulas
+        total_area1 = MathTex(
+            "A_T",
+            "=",
+            "A_1",
+            "+",
+            "A_2",
+            "+",
+            "A_3"
+        ).move_to(RIGHT * 0.75 + DOWN * 0.5).set_color(BLACK)
+
+        total_area2 = MathTex(
+            "A_T",
+            "=",
+            "\\frac{ab}{2}",
+            "+",
+            "\\frac{ab}{2}",
+            "+",
+            "\\frac{c ^ {2}}{2}"
+        ).move_to(RIGHT * 0.75 + DOWN * 0.5).set_color(BLACK)
+
+        total_area3 = MathTex(
+            "A_T",
+            "=",
+            "ab",
+            "+",
+            "\\frac{c ^ {2}}{2}"
+        ).move_to(RIGHT * 0.75 + DOWN * 0.5).set_color(BLACK)
+
+        self.play(Write(total_area1))
+        self.play(TransformMatchingTex(total_area1, total_area2))
+        self.play(TransformMatchingTex(total_area2, total_area3))
+
+
         self.wait(2)
