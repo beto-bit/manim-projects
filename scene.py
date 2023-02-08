@@ -110,13 +110,17 @@ class Test(Scene):
         m_vertex = trpzd.bottom_left
         n_vertex = trpzd.bottom_right
 
+        # Corner rect angles
+        square1 = Square(0.5, color=BLACK).move_to(m_vertex).shift(0.25 * (RIGHT + UP))
+        square2 = Square(0.5, color=BLACK).move_to(n_vertex).shift(0.25 * (LEFT + UP))
+
         # Vertex text for trapezoid
         p_point = point_and_tex('P', p_vertex, LEFT + UP)
         q_point = point_and_tex('Q', q_vertex, RIGHT + UP)
         m_point = point_and_tex('M', m_vertex, DOWN + LEFT)
         n_point = point_and_tex('N', n_vertex, DOWN + RIGHT)
 
-        trapezoid_tex = VGroup(p_point, q_point, m_point, n_point)
+        trapezoid_tex = VGroup(p_point, q_point, m_point, n_point, square1, square2)
 
 
         # Vertex for center triangle
