@@ -60,22 +60,22 @@ class Trapezoid(Polygon):
             **kwargs
         ).move_to(self)
 
-def tex_at(
+def MathTex_at(
     text: str,
     point: list | ndarray,
     direction=RIGHT,
     color=BLACK
-):
-    return Tex(text).next_to(point, direction).set_color(color)
+) -> MathTex:
+    return MathTex(text).next_to(point, direction).set_color(color)
 
-def point_and_tex(
+def point_and_MathTex(
     text: str,
     point: list | ndarray,
     direction=RIGHT,
     color=BLACK
 ):
     dot = Dot(point, color=color)
-    dot_text = tex_at(text, point, direction, color)
+    dot_text = MathTex_at(text, point, direction, color)
 
     return VGroup(dot, dot_text)
 
@@ -115,28 +115,28 @@ class Test(Scene):
         square2 = Square(0.5, color=BLACK).move_to(n_vertex).shift(0.25 * (LEFT + UP))
 
         # Vertex text for trapezoid
-        p_point = point_and_tex('P', p_vertex, LEFT + UP)
-        q_point = point_and_tex('Q', q_vertex, RIGHT + UP)
-        m_point = point_and_tex('M', m_vertex, DOWN + LEFT)
-        n_point = point_and_tex('N', n_vertex, DOWN + RIGHT)
+        p_point = point_and_MathTex('P', p_vertex, LEFT + UP)
+        q_point = point_and_MathTex('Q', q_vertex, RIGHT + UP)
+        m_point = point_and_MathTex('M', m_vertex, DOWN + LEFT)
+        n_point = point_and_MathTex('N', n_vertex, DOWN + RIGHT)
 
         trapezoid_tex = VGroup(p_point, q_point, m_point, n_point, square1, square2)
 
 
         # Vertex for center triangle
         r_vertex = triangle.get_vertices()[2]
-        r_point = point_and_tex('R', r_vertex, DOWN)
+        r_point = point_and_MathTex('R', r_vertex, DOWN)
 
         # Right triangle text
-        a1_tex = tex_at('a', middle_point(q_vertex, n_vertex), RIGHT * 0.5)
-        b1_tex = tex_at('b', middle_point(r_vertex, n_vertex), DOWN * 0.35)
-        c1_tex = tex_at('c', middle_point(r_vertex, q_vertex), LEFT)
+        a1_tex = MathTex_at('a', middle_point(q_vertex, n_vertex), RIGHT * 0.5)
+        b1_tex = MathTex_at('b', middle_point(r_vertex, n_vertex), DOWN * 0.35)
+        c1_tex = MathTex_at('c', middle_point(r_vertex, q_vertex), LEFT)
         right_triangle_tex = VGroup(a1_tex, b1_tex, c1_tex)
 
         # Left triangle text
-        a2_tex = tex_at('a', middle_point(m_vertex, r_vertex), DOWN * 0.65)
-        b2_tex = tex_at('b', middle_point(m_vertex, p_vertex), LEFT * 0.5)
-        c2_tex = tex_at('c', middle_point(p_vertex, r_vertex), UP * 0.3 + RIGHT)
+        a2_tex = MathTex_at('a', middle_point(m_vertex, r_vertex), DOWN * 0.65)
+        b2_tex = MathTex_at('b', middle_point(m_vertex, p_vertex), LEFT * 0.5)
+        c2_tex = MathTex_at('c', middle_point(p_vertex, r_vertex), UP * 0.3 + RIGHT)
         left_triangle_tex = VGroup(a2_tex, b2_tex, c2_tex)
 
 
@@ -148,7 +148,21 @@ class Test(Scene):
         alpha2 = three_point_angle(p_vertex, m_vertex, r_vertex)
         beta2 = three_point_angle(m_vertex, r_vertex, p_vertex)
 
-        triangles_angles = VGroup(alpha1, beta1, alpha2, beta2)
+        # Labels
+        alpha1_tex = MathTex(r"\alpha", color=BLACK)
+        beta1_tex = MathTex(r"\beta", color=BLACK)
+
+        alpha2_tex = alpha1_tex.copy()
+        beta2_tex = beta1_tex.copy()
+
+        angle_labels = VGroup(
+            alpha1_tex.move_to(alpha1),
+            beta1_tex.move_to(beta1),
+
+            alpha2_tex.move_to(alpha2),
+            beta2_tex.move_to(beta2)
+        )
+        triangles_angles = VGroup(alpha1, beta1, alpha2, beta2, angle_labels)
 
 
         # Animations
