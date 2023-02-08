@@ -84,6 +84,20 @@ def middle_point(p1: ndarray, p2: ndarray) -> ndarray:
     return Line(p1, p2).get_midpoint()
 
 
+def three_point_angle(
+    p1: ndarray,
+    p2: ndarray,
+    center: ndarray,
+    radius=0.75,
+    color=BLACK,
+    **kwargs
+) -> Angle:
+    line1 = Line(center, p1)
+    line2 = Line(center, p2)
+
+    return Angle(line1, line2, radius=radius, color=color, **kwargs)
+
+
 class Test(Scene):
     def construct(self):
         # Shapes
@@ -98,31 +112,48 @@ class Test(Scene):
 
         # Vertex text for trapezoid
         p_point = point_and_tex('P', p_vertex, LEFT + UP)
-        q_point = point_and_tex('Q', q_vertex, RIGHT)
-        m_point = point_and_tex('M', m_vertex, DOWN)
-        n_point = point_and_tex('N', n_vertex, DOWN)
+        q_point = point_and_tex('Q', q_vertex, RIGHT + UP)
+        m_point = point_and_tex('M', m_vertex, DOWN + LEFT)
+        n_point = point_and_tex('N', n_vertex, DOWN + RIGHT)
 
         trapezoid_tex = VGroup(p_point, q_point, m_point, n_point)
+
 
         # Vertex for center triangle
         r_vertex = triangle.get_vertices()[2]
         r_point = point_and_tex('R', r_vertex, DOWN)
 
         # Right triangle text
-        a1_tex = tex_at('a', middle_point(q_vertex, n_vertex))
+        a1_tex = tex_at('a', middle_point(q_vertex, n_vertex), RIGHT * 0.5)
         b1_tex = tex_at('b', middle_point(r_vertex, n_vertex), DOWN * 0.35)
         c1_tex = tex_at('c', middle_point(r_vertex, q_vertex), LEFT)
         right_triangle_tex = VGroup(a1_tex, b1_tex, c1_tex)
 
         # Left triangle text
         a2_tex = tex_at('a', middle_point(m_vertex, r_vertex), DOWN * 0.65)
-        b2_tex = tex_at('b', middle_point(m_vertex, p_vertex), LEFT)
+        b2_tex = tex_at('b', middle_point(m_vertex, p_vertex), LEFT * 0.5)
         c2_tex = tex_at('c', middle_point(p_vertex, r_vertex), UP * 0.3 + RIGHT)
         left_triangle_tex = VGroup(a2_tex, b2_tex, c2_tex)
 
 
+        # Right triangle angles
+        alpha1 = three_point_angle(q_vertex, n_vertex, r_vertex, other_angle=True)
+        beta1 = three_point_angle(r_vertex, n_vertex, q_vertex)
+
+        # Left triangle angles
+        alpha2 = three_point_angle(p_vertex, m_vertex, r_vertex)
+        beta2 = three_point_angle(m_vertex, r_vertex, p_vertex)
+
+        triangles_angles = VGroup(alpha1, beta1, alpha2, beta2)
+
+
         # Animations
+        # Initial things
         self.play(Write(VGroup(trpzd, trapezoid_tex)))
         self.play(Write(VGroup(triangle, r_point, right_triangle_tex, left_triangle_tex)))
+        self.wait(1)
+
+        # Angles
+        self.play(Write(triangles_angles))
 
         self.wait(2)
