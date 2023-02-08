@@ -265,12 +265,32 @@ class Test(Scene):
         # Fading and moving
         self.play(
             Unwrite(VGroup(triangle_areas, center_triangle_area1)),
-            total_area3.animate.shift(LEFT * 5.6)
+            total_area3.animate.shift(LEFT * 5.55)
         )
 
         # Highlight
         framebox1 = SurroundingRectangle(total_area3).set_color(BLUE)
         self.play(Create(framebox1))
+
+
+        # Enclosing rectangle
+        big_rectangle = trpzd.enclosing_rectangle(color=BLACK).scale(0.5)
+        self.play(Write(big_rectangle))
+
+        # Formula 2
+        outer_triangle1 = MathTex(
+            "A_4",
+            "=",
+            "{ ( {{a}} + {{b}} )( {{a}} - {{b}} ) \\over 2}"
+        ).move_to(RIGHT+ UP * 2).set_color(BLACK)
+        self.play(Write(outer_triangle1))
+
+        outer_triangle2 = MathTex(
+            "A_4",
+            "=",
+            "{ {{a}}^2 - {{b}}^2 \\over 2}"
+        ).move_to(outer_triangle1).set_color(BLACK)
+        self.play(TransformMatchingTex(outer_triangle1, outer_triangle2))
 
 
         self.wait(2)
