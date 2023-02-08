@@ -79,23 +79,42 @@ def point_and_MathTex(
 
     return VGroup(dot, dot_text)
 
-
 def middle_point(p1: ndarray, p2: ndarray) -> ndarray:
     return Line(p1, p2).get_midpoint()
 
-
-def three_point_angle(
+def angle_with_tex(
+    mtex: MathTex,
     p1: ndarray,
     p2: ndarray,
     center: ndarray,
     radius=0.75,
+    label_multiplier=1.5,
     color=BLACK,
     **kwargs
-) -> Angle:
+) -> VGroup:
     line1 = Line(center, p1)
     line2 = Line(center, p2)
 
-    return Angle(line1, line2, radius=radius, color=color, **kwargs)
+    invisible_angle = Angle(
+        line1,
+        line2,
+        radius=radius * label_multiplier,
+        color=color,
+        **kwargs
+    )
+
+    angle = Angle(
+        line1,
+        line2,
+        radius=radius,
+        color=color,
+        **kwargs
+    )
+
+    return VGroup(
+        angle,
+        mtex.move_to(invisible_angle.point_from_proportion(0.5))
+    )
 
 
 class Test(Scene):
@@ -140,38 +159,34 @@ class Test(Scene):
         left_triangle_tex = VGroup(a2_tex, b2_tex, c2_tex)
 
 
-        # Right triangle angles
-        alpha1 = three_point_angle(q_vertex, n_vertex, r_vertex, other_angle=True)
-        beta1 = three_point_angle(r_vertex, n_vertex, q_vertex)
+        # Angles
+        alpha_tex = MathTex(r'\alpha', color=BLACK)
+        beta_tex = MathTex(r'\beta', color=BLACK)
 
-        # Left triangle angles
-        alpha2 = three_point_angle(p_vertex, m_vertex, r_vertex)
-        beta2 = three_point_angle(m_vertex, r_vertex, p_vertex)
+        triangles_angles = VGroup(
+            angle_with_tex(alpha_tex, q_vertex, n_vertex, r_vertex, other_angle=True),    #Alpha right
+            angle_with_tex(beta_tex, r_vertex, n_vertex, q_vertex),                       # Beta right
 
-        # Labels
-        alpha1_tex = MathTex(r"\alpha", color=BLACK)
-        beta1_tex = MathTex(r"\beta", color=BLACK)
-
-        alpha2_tex = alpha1_tex.copy()
-        beta2_tex = beta1_tex.copy()
-
-        angle_labels = VGroup(
-            alpha1_tex.move_to(alpha1),
-            beta1_tex.move_to(beta1),
-
-            alpha2_tex.move_to(alpha2),
-            beta2_tex.move_to(beta2)
+            angle_with_tex(alpha_tex.copy(), m_vertex, r_vertex, p_vertex),   # Alpha left
+            angle_with_tex(beta_tex.copy(), p_vertex, m_vertex, r_vertex),    # Beta left
         )
-        triangles_angles = VGroup(alpha1, beta1, alpha2, beta2, angle_labels)
 
 
         # Animations
         # Initial things
         self.play(Write(VGroup(trpzd, trapezoid_tex)))
-        self.play(Write(VGroup(triangle, r_point, right_triangle_tex, left_triangle_tex)))
+        self.wait(1)
+
+        self.play(
+            Write(VGroup(triangle, r_point, right_triangle_tex, left_triangle_tex)),
+            FadeOut(trapezoid_tex)
+        )
         self.wait(1)
 
         # Angles
-        self.play(Write(triangles_angles))
+        self.play(
+            FadeOut(r_point),
+            Write(triangles_angles),
+        )
 
         self.wait(2)
